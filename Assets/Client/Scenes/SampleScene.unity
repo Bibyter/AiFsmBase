@@ -137,7 +137,7 @@ PrefabInstance:
     - target: {fileID: 4000342060681376340, guid: 6253890d17a25d949a138b8c31d910b5,
         type: 3}
       propertyPath: m_Speed
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4000342060681376341, guid: 6253890d17a25d949a138b8c31d910b5,
         type: 3}
@@ -740,5 +740,10 @@ PrefabInstance:
       propertyPath: _attackTarget
       value: 
       objectReference: {fileID: 1318788866}
+    - target: {fileID: 4000342060681376343, guid: 6253890d17a25d949a138b8c31d910b5,
+        type: 3}
+      propertyPath: _pursuitStopDistance
+      value: 0.7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6253890d17a25d949a138b8c31d910b5, type: 3}
