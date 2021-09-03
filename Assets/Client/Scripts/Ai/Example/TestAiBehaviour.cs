@@ -10,7 +10,7 @@ namespace Client.Ai
     }
 }
 
-namespace Client.Ai.Test
+namespace Client.Ai.Example
 {
     public sealed class TestAiBehaviour : MonoBehaviour, IFaceRotation, IAiTarget
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Client.Ai.Test
+namespace Client.Ai.Example
 {
     public sealed class CowardBrain : IAiBrain
     {

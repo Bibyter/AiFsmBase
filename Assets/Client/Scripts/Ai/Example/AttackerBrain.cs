@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Client.Ai.Test
+namespace Client.Ai.Example
 {
     public sealed class AttackerBrain : IAiBrain
     {
