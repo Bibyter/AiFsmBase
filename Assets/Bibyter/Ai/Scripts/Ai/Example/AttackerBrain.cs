@@ -20,15 +20,14 @@ namespace Client.Ai.Example
         public void Enter()
         {
             _state = 0;
+            _aiController.SetState<IdleAction>();
         }
 
         public void Execute()
         {
-            if (_state == 0)
+            if (_state == 0 && _aiData.hasTarget)
             {
                 _aiController.SetState<PursuitAction>();
-                _aiData.hasTarget = true;
-                _aiData.targetTransform = _aiData.target.transform;
                 _state++;
             }
 
@@ -37,8 +36,6 @@ namespace Client.Ai.Example
                 if (_aiData.actionState == AiActionState.Complete)
                 {
                     _aiController.SetState<Attack2Action>();
-                    _aiData.hasTarget = true;
-                    _aiData.targetTransform = _aiData.target.transform;
                     _state++;
                 }
             }
@@ -47,8 +44,6 @@ namespace Client.Ai.Example
                 if (_aiData.actionState == AiActionState.Failed)
                 {
                     _aiController.SetState<PursuitAction>();
-                    _aiData.hasTarget = true;
-                    _aiData.targetTransform = _aiData.target.transform;
                     _state--;
                 }
             }

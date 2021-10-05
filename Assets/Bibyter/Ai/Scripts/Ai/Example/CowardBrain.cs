@@ -17,15 +17,14 @@ namespace Client.Ai.Example
         public void Enter()
         {
             _state = 0;
+            _aiController.SetState<IdleAction>();
         }
 
         public void Execute()
         {
-            if (_state == 0)
+            if (_state == 0 && _aiData.hasTarget)
             {
                 _aiController.SetState<IdleAction>();
-                _aiData.hasTarget = true;
-                _aiData.targetTransform = _aiData.target.transform;
                 _aiData.moveType = AiData.MoveType.Run;
                 _state++;
             }

@@ -19,10 +19,10 @@ namespace Client.Ai.Example
 
         [SerializeField] Animator _animator;
         [SerializeField] NavMeshAgent _navAgent;
+        [SerializeField] AiTargetFinder _targetFinder;
         [Space]
         [SerializeField] float _attackDistance = 1.5f;
         [SerializeField] float _pursuitStopDistance = 1.5f;
-        [SerializeField] Transform _attackTarget;
         [Space]
         [SerializeField] bool _aiControllerNeedUpdateInTransition;
 
@@ -51,8 +51,6 @@ namespace Client.Ai.Example
 
             _aiController = new AiController(container, _aiControllerNeedUpdateInTransition);
 
-            SetAiTarget(_attackTarget.gameObject);
-
             _aiBrainController = new AiBrainController();
             SetBrain(_startAiType);
         }
@@ -73,17 +71,9 @@ namespace Client.Ai.Example
         void AiDataUpdate()
         {
             var position = _navAgent.nextPosition;
-            _aiData.hasTarget = _aiData.target != null && _aiData.target.isAlive;
-            _aiData.targetDistance = _aiData.hasTarget ? Vector3.Distance(position, _aiData.targetTransform.position) : float.MaxValue;
-        }
-
-        public void SetAiTarget(GameObject gameObject)
-        {
-            if (gameObject.TryGetComponent(out IAiTarget aiTarget))
-            {
-                _aiData.targetTransform = gameObject.transform;
-                _aiData.target = aiTarget;
-            }
+            _aiData.hasTarget = _targetFinder.hasTarget;
+            _aiData.target = _targetFinder.target;
+            _aiData.targetDistance = _aiData.hasTarget ? Vector3.Distance(position, _targetFinder.target.position) : float.MaxValue;
         }
 
         void SetBrain(AiType aiType)
@@ -129,6 +119,8 @@ namespace Client.Ai.Example
         bool IAiTarget.isAlive => true;
 
         Transform IAiTarget.transform => transform;
+
+        Vector3 IAiTarget.position => transform.position;
         #endregion
     }
 }

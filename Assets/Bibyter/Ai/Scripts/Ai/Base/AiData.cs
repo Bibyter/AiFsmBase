@@ -16,16 +16,10 @@ namespace Client.Ai
         public float pursuitStopDistance;
 
         public bool hasTarget;
-        public Transform targetTransform;
         public IAiTarget target;
         public float targetDistance;
 
         public float attackDistance;
-
-        public Vector3 GetTargetPosition()
-        {
-            return hasTarget ? targetTransform.position : Vector3.zero;
-        }
 
         public string GetMoveAnimKey()
         {

@@ -5,18 +5,14 @@ using UnityEngine.AI;
 
 namespace Client.Ai
 {
-    public enum PursuitState
-    {
-        None, Move, Complete
-    }
-
-    public sealed class PursuitAction : AiAction
+    public sealed class Attack2Action : AiAction
     {
         AiData _data;
         NavMeshAgent _navAnent;
         Animator _animator;
+        IFaceRotation _faceRotation;
 
-        bool _isMove;
+        bool _isAttack;
         bool _needInit;
 
 
@@ -25,62 +21,65 @@ namespace Client.Ai
             _data = container.Get<AiData>();
             _navAnent = container.Get<NavMeshAgent>();
             _animator = container.Get<Animator>();
+            _faceRotation = container.Get<IFaceRotation>();
         }
 
         public override void OnEnter()
         {
-            float distance = _data.hasTarget ? Vector3.Distance(_navAnent.nextPosition, _data.targetTransform.position) : 0f;
-            _isMove = distance > _data.pursuitStopDistance;
+            _isAttack = _data.targetDistance < _data.attackDistance;
             _needInit = true;
+
             _data.actionState = AiActionState.None;
+
+            _navAnent.ResetPath();
+            _animator.SetBool("walk", false);
         }
 
         public override void Update()
         {
-            float distance = _data.hasTarget ? Vector3.Distance(_navAnent.nextPosition, _data.targetTransform.position) : 0f;
+            var position = _navAnent.nextPosition;
+            var targetPosition = _data.hasTarget ? _data.target.position : Vector3.zero;
 
-            if (_isMove)
+            if (_isAttack)
             {
                 if (_needInit)
                 {
-                    _animator.SetBool("walk", true);
-                    _navAnent.SetDestination(_data.targetTransform.position);
                     _data.actionState = AiActionState.Run;
+                    _animator.SetBool("attack", true);
                     _needInit = false;
                 }
 
-                if (distance < _data.pursuitStopDistance || !_data.hasTarget)
+                if (_data.hasTarget)
+                    _faceRotation.Start(targetPosition - position);
+
+                if (_data.targetDistance > (_data.attackDistance + 0.3f) || !_data.hasTarget)
                 {
-                    _isMove = false;
+                    _isAttack = false;
                     _needInit = true;
-                }
-                else if (_navAnent.remainingDistance < 0.3f)
-                {
-                    _navAnent.SetDestination(_data.targetTransform.position);
                 }
             }
             else
             {
                 if (_needInit)
                 {
-                    _animator.SetBool("walk", false);
-                    _navAnent.ResetPath();
-                    _data.actionState = AiActionState.Complete;
+                    _data.actionState = AiActionState.Failed;
+                    _animator.SetBool("attack", false);
+                    _faceRotation.Stop();
                     _needInit = false;
                 }
 
-                if (distance > (_data.pursuitStopDistance + 0.2f) && _data.hasTarget)
+                if (_data.targetDistance < _data.attackDistance && _data.hasTarget)
                 {
                     _needInit = true;
-                    _isMove = true;
+                    _isAttack = true;
                 }
             }
         }
 
         public override void OnExit()
         {
+            _animator.SetBool("attack", false);
+            _faceRotation.Stop();
         }
-
     }
-
 }
