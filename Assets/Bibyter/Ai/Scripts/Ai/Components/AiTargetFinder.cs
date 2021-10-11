@@ -79,6 +79,8 @@ namespace Client.Ai
                     continue;
                 }
 
+                if (!_targets[i].isAlive) continue;
+
                 var targetPosition = _targets[i].position;
 
                 if (!IsVision(selfPosition, selfForward, targetPosition)) continue;
@@ -105,7 +107,9 @@ namespace Client.Ai
             var dir = targetPosition - selfPosition;
             dir.y = 0f;
 
-            if (dir.magnitude <= 0.001f)
+            float dirMagnitude = dir.magnitude;
+
+            if (dirMagnitude > _visionRange || dirMagnitude <= 0.001f)
                 return false;
 
             float angle = Vector3.Angle(dir, selfForward);
