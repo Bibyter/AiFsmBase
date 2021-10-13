@@ -9,6 +9,9 @@ namespace Client.Ai
         [SerializeField, Range(0f, 360f)] float _visionAngle = 30f;
         [SerializeField] float _visionRange = 3f;
 
+        // target Retention Time in outside vision range
+        [SerializeField] float _targetRetentionTime = 3f;
+
         List<IAiTarget> _targets;
         float _targetNotVisionTime;
 
@@ -51,7 +54,7 @@ namespace Client.Ai
                     _targetNotVisionTime += Time.deltaTime;
                 }
 
-                if (!_currentTarget.isAlive || _targetNotVisionTime > 3f)
+                if (!_currentTarget.isAlive || _targetNotVisionTime > _targetRetentionTime)
                 {
                     _currentTarget = null;
                 }
